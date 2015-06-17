@@ -1,0 +1,65 @@
+﻿@using System.Web.Optimization;
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />    
+    @Styles.Render("~/Content/styles")
+</head>
+<body>
+    <header>
+        <div id="header">
+            I am the header
+            <a href="/">Home</a>
+            <a href="/Person">Persons</a>
+        </div>
+    </header>
+    <div id="body">
+        <div id="MainContent">
+            @RenderBody()
+        </div>
+    </div>
+    <footer>
+        <div id="footer">
+            I am the footer
+        </div>
+    </footer>
+
+    <script src="~/Scripts/jquery-1.9.1.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#myTable").dataTable({
+                'paging': true,
+                'ordering': true,
+                'info': true,
+                "lengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
+                "columnDefs": [{ "visible": false, "targets": [2] }],
+                "order": [[2, "asc"]],
+                "drawCallback": function (settings) {
+                    var api = this.api();
+                    var rows = api.rows({ page: 'current' }).nodes();
+                    var last = null;
+                    api.column(2, { page: 'current' }).data().each(function (group, i) {
+                        if (last != group)
+                        {
+                            $(rows).eq(i).before(
+                                    '<tr class="group"><td colspan="5">'+group+'</td></tr>'
+                                );
+                            last = group;
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+    @Scripts.Render("~/bundles/juqery")
+    @Scripts.Render("~/bundles/juqeryval")
+    @Scripts.Render("~/bundles/site")
+</body>
+</html>
